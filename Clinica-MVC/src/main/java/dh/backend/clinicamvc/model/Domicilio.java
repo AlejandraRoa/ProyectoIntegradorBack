@@ -21,7 +21,7 @@ public class Domicilio {
         this.localidad = localidad;
         this.provincia = provincia;
     }
-
+    public Domicilio(){}
     public Integer getId() {
         return id;
     }
