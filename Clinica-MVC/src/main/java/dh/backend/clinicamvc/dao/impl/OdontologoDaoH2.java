@@ -17,6 +17,9 @@ public class OdontologoDaoH2 implements IDao<Odontologo> {
     private static String SQL_INSERT = "INSERT INTO ODONTOLOGOS VALUES (DEFAULT,?,?,?)";
     private static String SQL_SELECT_ID = "SELECT * FROM ODONTOLOGOS WHERE ID=?";
     private static String SQL_SELECT_ALL = "SELECT * FROM ODONTOLOGOS";
+
+    private static String SQL_UPDATE = "UPDATE ODONTOLOGOS SET APELLIDO=?, NOMBRE=?, NUMEROMATRICULA =? WHERE ID=?";
+    private static String SQL_DELETE = "DELETE FROM ODONTOLOGOS WHERE ID=?";
     @Override
     public Odontologo registrar(Odontologo odontologo) {
         Connection connection = null;
@@ -129,5 +132,85 @@ public class OdontologoDaoH2 implements IDao<Odontologo> {
             }
         }
         return odontologos;
+    }
+
+    @Override
+    public void actualizar(Odontologo odontologo) {
+        Connection connection = null;
+
+        try{
+            connection = H2Connection.getConnection();
+            connection.setAutoCommit(false);
+
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE);
+            preparedStatement.setString(1, odontologo.getApellido());
+            preparedStatement.setString(2, odontologo.getNombre());
+            preparedStatement.setString(3, odontologo.getNumeroMatricula());
+            preparedStatement.setInt(4, odontologo.getId());
+
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+            LOGGER.info("odontologo actualizado ");
+
+            connection.commit();
+            connection.setAutoCommit(true);
+        }catch (Exception e){
+            if(connection!=null){
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    LOGGER.info(ex.getMessage());
+                    ex.printStackTrace();
+                }
+            }
+            LOGGER.info(e.getMessage());
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                LOGGER.info(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void eliminar(Integer id) {
+        Connection connection = null;
+
+        try{
+            connection = H2Connection.getConnection();
+            connection.setAutoCommit(false);
+
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE);
+            preparedStatement.setInt(1,id);
+
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            LOGGER.info("odontologo eliminado");
+
+            connection.commit();
+            connection.setAutoCommit(true);
+        }catch (Exception e){
+            if(connection!=null){
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    LOGGER.info(ex.getMessage());
+                    ex.printStackTrace();
+                }
+            }
+            LOGGER.info(e.getMessage());
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                LOGGER.info(e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 }

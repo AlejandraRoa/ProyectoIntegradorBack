@@ -25,6 +25,7 @@ public class OdontologoController {
 
         return "index1";
     }*/
+
     @GetMapping
     public List<Odontologo> ListarOdontologos(){
         return odontologoService.buscarTodos();
@@ -40,4 +41,18 @@ public class OdontologoController {
         Odontologo odont= odontologoService.registrarOdontologo(odontologo);
         return odont;
     }
+    @PutMapping
+    public String actualizarOdontologo(@RequestBody Odontologo odontologo){
+        odontologoService.actualizarOdontologo(odontologo);
+        return "Odontologo Actualizado";
+    }
+
+    @DeleteMapping("/{id}")
+    public String eliminarOdontologo(@PathVariable Integer id){
+         odontologoService.eliminarOdontologo(id);
+         return "Odontologo Eliminado";
+    }
+
+
+
 }
