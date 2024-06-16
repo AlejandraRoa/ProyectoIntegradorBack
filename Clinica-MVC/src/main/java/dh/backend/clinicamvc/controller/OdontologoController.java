@@ -3,6 +3,8 @@ package dh.backend.clinicamvc.controller;
 import dh.backend.clinicamvc.model.Odontologo;
 import dh.backend.clinicamvc.model.Paciente;
 import dh.backend.clinicamvc.service.impl.OdontologoService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,42 +19,36 @@ public class OdontologoController {
     public OdontologoController(OdontologoService odontologoService) {
         this.odontologoService = odontologoService;
     }
-/*
-    @GetMapping("/buscarOdontologo")
-    public String buscarPorId(Model model, @RequestParam Integer id){
-        Odontologo odontologo = odontologoService.buscarPorId(id);
-        model.addAttribute("Matricula",odontologo.getNumeroMatricula());
-
-        return "index1";
-    }*/
 
     @GetMapping
-    public List<Odontologo> ListarOdontologos(){
-        return odontologoService.buscarTodos();
+    public ResponseEntity<List<Odontologo>> ListarOdontologos(){
+        return ResponseEntity.ok(odontologoService.buscarTodos());
     }
 
     @GetMapping("/{id}")
-    public Odontologo ConsultarOdontologos(@PathVariable Integer id){
-        return odontologoService.buscarPorId(id);
+    public ResponseEntity<Odontologo> ConsultarOdontologos(@PathVariable Integer id){
+        Odontologo odontologo = odontologoService.buscarPorId(id);
+        if(odontologo != null){
+            return ResponseEntity.ok(odontologo);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PostMapping
-    public Odontologo CrearOdontologos(@RequestBody Odontologo odontologo){
+    public ResponseEntity<Odontologo> CrearOdontologos(@RequestBody Odontologo odontologo){
         Odontologo odont= odontologoService.registrarOdontologo(odontologo);
-        return odont;
+        return ResponseEntity.status(HttpStatus.CREATED).body(odont);
     }
     @PutMapping
-    public String actualizarOdontologo(@RequestBody Odontologo odontologo){
+    public ResponseEntity <String> actualizarOdontologo(@RequestBody Odontologo odontologo){
         odontologoService.actualizarOdontologo(odontologo);
-        return "Odontologo Actualizado";
+        return ResponseEntity.ok("Odontologo actualizado");
     }
 
     @DeleteMapping("/{id}")
-    public String eliminarOdontologo(@PathVariable Integer id){
+    public ResponseEntity<String> eliminarOdontologo(@PathVariable Integer id){
          odontologoService.eliminarOdontologo(id);
-         return "Odontologo Eliminado";
+        return ResponseEntity.ok("Odontologo eliminado");
     }
-
-
-
 }

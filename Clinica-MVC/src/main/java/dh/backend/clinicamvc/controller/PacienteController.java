@@ -3,6 +3,8 @@ package dh.backend.clinicamvc.controller;
 import dh.backend.clinicamvc.model.Odontologo;
 import dh.backend.clinicamvc.model.Paciente;
 import dh.backend.clinicamvc.service.impl.PacienteService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,31 +29,41 @@ public class PacienteController {
         return "index";
     }*/
     @GetMapping
-    public List<Paciente> ListarPacientes(){
-        return pacienteService.buscarTodos();
+    public ResponseEntity<List<Paciente>> ListarPacientes(){
+        return ResponseEntity.ok(pacienteService.buscarTodos());
     }
 
     @GetMapping("/{id}")
-    public Paciente ConsultarPacientes(@PathVariable Integer id){
-        return pacienteService.buscarPorId(id);
+    public ResponseEntity<Paciente> BuscarPacientes(@PathVariable Integer id){
+        Paciente paciente = pacienteService.buscarPorId(id);
+        if(paciente != null){
+            return ResponseEntity.ok(paciente);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PostMapping
-    public Paciente CrearPacientes(@RequestBody Paciente paciente){
+    public ResponseEntity<Paciente>  CrearPacientes(@RequestBody Paciente paciente){
         Paciente pac= pacienteService.registrarPaciente(paciente);
-        return pac;
+        Paciente pacienteARetornar = pacienteService.registrarPaciente(paciente);
+        if(pacienteARetornar==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.CREATED).body(pacienteARetornar);
+        }
     }
 
     @PutMapping
-    public String actualizarOdontologo(@RequestBody Paciente paciente){
+    public ResponseEntity<String> actualizarOdontologo(@RequestBody Paciente paciente){
         pacienteService.actualizarPaciente(paciente);
-        return "Paciente Actualizado";
+        return ResponseEntity.ok("Paciente Actualizado");
     }
 
     @DeleteMapping("/{id}")
-    public String eliminarOdontologo(@PathVariable Integer id){
+    public ResponseEntity<String> eliminarOdontologo(@PathVariable Integer id){
         pacienteService.eliminarPaciente(id);
-        return "Paciente Eliminado";
+        return ResponseEntity.ok("Paciente eliminado");
     }
 
 }
