@@ -9,4 +9,8 @@ public interface IOdoltologoService {
     Odontologo buscarPorId(Integer id);
     Odontologo registrarOdontologo(Odontologo odontologo);
     List<Odontologo> buscarTodos();
+
+    void actualizarOdontologo(Odontologo odontologo);
+    void eliminarOdontologo(Integer id);
+
 }
