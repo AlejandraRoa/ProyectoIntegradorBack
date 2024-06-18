@@ -72,10 +72,30 @@
             <th>Nombre</th>
             <th>Apellido</th>
             <th>Matricula</th>
+            <th>Acciones</th> <!-- Añadimos la columna de Acciones -->
           </tr>
         </thead>
         <tbody></tbody>
       </table>
+
+      <!-- Formulario para editar un odontólogo -->
+      <form id="editOdontologoForm" style="display: none;">
+        <input type="hidden" id="editId" />
+        <div class="mb-3">
+          <label for="editNombre" class="form-label">Nombre:</label>
+          <input type="text" id="editNombre" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label for="editApellido" class="form-label">Apellido:</label>
+          <input type="text" id="editApellido" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label for="editNumeroMatricula" class="form-label">Número de Matrícula:</label>
+          <input type="text" id="editNumeroMatricula" class="form-control" />
+        </div>
+        <button type="button" class="btn btn-primary" onclick="submitEdit()">Guardar cambios</button>
+        <button type="button" class="btn btn-secondary" onclick="hideEditForm()">Cancelar</button>
+      </form>
     </div>
     <script src="js/listar_odontologos.js"></script>
   </body>

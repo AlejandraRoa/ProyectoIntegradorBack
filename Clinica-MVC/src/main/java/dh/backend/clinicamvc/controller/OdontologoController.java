@@ -40,8 +40,9 @@ public class OdontologoController {
         Odontologo odont= odontologoService.registrarOdontologo(odontologo);
         return ResponseEntity.status(HttpStatus.CREATED).body(odont);
     }
-    @PutMapping
-    public ResponseEntity <String> actualizarOdontologo(@RequestBody Odontologo odontologo){
+    @PutMapping("/{id}")
+    public ResponseEntity<String> actualizarOdontologo(@PathVariable Integer id, @RequestBody Odontologo odontologo) {
+        odontologo.setId(id);  // Asigna el ID al objeto odontólogo
         odontologoService.actualizarOdontologo(odontologo);
         return ResponseEntity.ok("Odontologo actualizado");
     }

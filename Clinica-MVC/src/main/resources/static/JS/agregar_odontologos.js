@@ -1,6 +1,5 @@
 const form = document.getElementById("agregarForm");
 
-
 form.addEventListener("submit", function (event) {
     event.preventDefault();
 

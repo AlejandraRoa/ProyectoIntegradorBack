@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <nav
       class="navbar bg-dark navbar-expand-lg bg-body-tertiary"
       data-bs-theme="dark"
@@ -35,17 +44,17 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Gestión Odontólogos
+                Gestion Odontologos
               </a>
               <ul class="dropdown-menu">
                 <li>
                   <a class="dropdown-item" href="agregar_odontologos.html"
-                    >Agregar odontólogos</a
+                    >Agregar odontologos</a
                   >
                 </li>
                 <li>
                   <a class="dropdown-item" href="listar_odontologos.html"
-                    >Listar odontólogos</a
+                    >Listar odontologos</a
                   >
                 </li>
               </ul>
@@ -54,5 +63,40 @@
         </div>
       </div>
     </nav>
-</body>
+    <div class="container-xl">
+      <h1 class="mt-5">Odontologos</h1>
+      <table class="table table-striped-columns" id="odontologosTable">
+        <thead>
+          <tr>
+            <th>Orden</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Matricula</th>
+            <th>Acciones</th> <!-- Añadimos la columna de Acciones -->
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <!-- Formulario para editar un odontólogo -->
+      <form id="editOdontologoForm" style="display: none;">
+        <input type="hidden" id="editId" />
+        <div class="mb-3">
+          <label for="editNombre" class="form-label">Nombre:</label>
+          <input type="text" id="editNombre" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label for="editApellido" class="form-label">Apellido:</label>
+          <input type="text" id="editApellido" class="form-control" />
+        </div>
+        <div class="mb-3">
+          <label for="editNumeroMatricula" class="form-label">Número de Matrícula:</label>
+          <input type="text" id="editNumeroMatricula" class="form-control" />
+        </div>
+        <button type="button" class="btn btn-primary" onclick="submitEdit()">Guardar cambios</button>
+        <button type="button" class="btn btn-secondary" onclick="hideEditForm()">Cancelar</button>
+      </form>
+    </div>
+    <script src="js/listar_odontologos.js"></script>
+  </body>
 </html>
