@@ -5,9 +5,13 @@ import dh.backend.clinicamvc.Dto.Response.OdontologoResponseDto;
 import dh.backend.clinicamvc.Dto.Response.PacienteResponseDto;
 import dh.backend.clinicamvc.Dto.Response.TurnoResponseDto;
 import dh.backend.clinicamvc.dao.IDao;
+import dh.backend.clinicamvc.exception.ResourceNotFoundException;
 import dh.backend.clinicamvc.model.Odontologo;
 import dh.backend.clinicamvc.model.Paciente;
 import dh.backend.clinicamvc.model.Turno;
+import dh.backend.clinicamvc.repository.IOdontologoRepository;
+import dh.backend.clinicamvc.repository.IPacienteRepository;
+import dh.backend.clinicamvc.repository.ITurnoRepository;
 import dh.backend.clinicamvc.service.ITurnoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -15,33 +19,35 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TurnoService implements ITurnoService {
-    private IDao<Turno> turnoIDao;
-    private IDao<Paciente> pacienteIDao;
-    private IDao<Odontologo> odontologoIDao;
+    private IOdontologoRepository odontologoRepository;
+    private IPacienteRepository pacienteRepository;
+    private ITurnoRepository turnoRepository;
     private ModelMapper modelMapper;
 
-    public TurnoService(IDao<Turno> turnoIDao, IDao<Paciente> pacienteIDao, IDao<Odontologo> odontologoIDao, ModelMapper modelMapper) {
-        this.turnoIDao = turnoIDao;
-        this.pacienteIDao = pacienteIDao;
-        this.odontologoIDao = odontologoIDao;
+    public TurnoService(IOdontologoRepository odontologoRepository, IPacienteRepository pacienteRepository, ITurnoRepository turnoRepository, ModelMapper modelMapper) {
+        this.odontologoRepository = odontologoRepository;
+        this.pacienteRepository = pacienteRepository;
+        this.turnoRepository = turnoRepository;
         this.modelMapper = modelMapper;
     }
 
     @Override
     public TurnoResponseDto registrar(TurnoRequestDto turnoRequestDto) {
-        Paciente paciente = pacienteIDao.buscarPorId(turnoRequestDto.getPaciente_id());
-        Odontologo odontologo = odontologoIDao.buscarPorId(turnoRequestDto.getOdontologo_id());
+        Optional<Paciente> paciente = pacienteRepository.findById(turnoRequestDto.getPaciente_id());
+        Optional<Odontologo> odontologo = odontologoRepository.findById(turnoRequestDto.getOdontologo_id());
         Turno turnoARegistrar = new Turno();
         Turno turnoGuardado = null;
         TurnoResponseDto turnoADevolver = null;
-        if(paciente!=null && odontologo!=null){
-            turnoARegistrar.setOdontologo(odontologo);
-            turnoARegistrar.setPaciente(paciente);
+        if(paciente.isPresent() && odontologo.isPresent()){
+            turnoARegistrar.setOdontologo(odontologo.get());
+            turnoARegistrar.setPaciente(paciente.get());
             turnoARegistrar.setFecha(LocalDate.parse(turnoRequestDto.getFecha()));
-            turnoGuardado = turnoIDao.registrar(turnoARegistrar);
+            turnoGuardado = turnoRepository.save(turnoARegistrar);
+
             turnoADevolver = mapToResponseDto(turnoGuardado);
         }
         return turnoADevolver;
@@ -49,14 +55,18 @@ public class TurnoService implements ITurnoService {
 
     @Override
     public TurnoResponseDto buscarPorId(Integer id) {
-        Turno turnoEncontrado = turnoIDao.buscarPorId(id);
-        TurnoResponseDto turnoADevolver = mapToResponseDto(turnoEncontrado);
-        return turnoADevolver;
+        Optional<Turno> turnoOptional = turnoRepository.findById(id);
+        if(turnoOptional.isPresent()){
+            Turno turnoEncontrado = turnoOptional.get();
+            TurnoResponseDto turnoADevolver = mapToResponseDto(turnoEncontrado);
+            return turnoADevolver;
+        }
+        return null;
     }
 
     @Override
     public List<TurnoResponseDto> buscarTodos() {
-        List<Turno> turnos = turnoIDao.buscarTodos();
+        List<Turno> turnos = turnoRepository.findAll();
         List<TurnoResponseDto> turnosADevolver = new ArrayList<>();
         TurnoResponseDto turnoAuxiliar = null;
         for(Turno turno: turnos){
@@ -68,23 +78,41 @@ public class TurnoService implements ITurnoService {
 
     @Override
     public void actualizarTurno(Integer id, TurnoRequestDto turnoRequestDto) {
-        Paciente paciente = pacienteIDao.buscarPorId(turnoRequestDto.getPaciente_id());
-        Odontologo odontologo = odontologoIDao.buscarPorId(turnoRequestDto.getOdontologo_id());
-        Turno turno = turnoIDao.buscarPorId(id);
+        Optional<Paciente> paciente = pacienteRepository.findById(turnoRequestDto.getPaciente_id());
+        Optional<Odontologo> odontologo = odontologoRepository.findById(turnoRequestDto.getOdontologo_id());
+        Optional<Turno> turno = turnoRepository.findById(id);
         Turno turnoAModificar = new Turno();
-        if(paciente!=null && odontologo!=null && turno != null){
+        if(paciente.isPresent() && odontologo.isPresent() && turno.isPresent()){
             turnoAModificar.setId(id);
-            turnoAModificar.setOdontologo(odontologo);
-            turnoAModificar.setPaciente(paciente);
+            turnoAModificar.setOdontologo(odontologo.get());
+            turnoAModificar.setPaciente(paciente.get());
             turnoAModificar.setFecha(LocalDate.parse(turnoRequestDto.getFecha()));
-            turnoIDao.actualizar(turnoAModificar);
+            turnoRepository.save(turnoAModificar);
         }
     }
 
     @Override
-    public void eliminarTurno(Integer id) {
-        turnoIDao.eliminar(id);
+    public void eliminarTurno(Integer id) throws ResourceNotFoundException {
+        TurnoResponseDto turnoResponseDto = buscarPorId(id);
+        if(turnoResponseDto !=null)
+            turnoRepository.deleteById(id);
+        else
+            throw new ResourceNotFoundException("{\"message\": \"turno no encontrado\"}");
     }
+
+    @Override
+    public List<TurnoResponseDto> buscarTurnoEntreFechas(LocalDate startDate, LocalDate endDate) {
+        List<Turno> listadoTurnos = turnoRepository.buscarTurnoEntreFechas(startDate, endDate);
+        List<TurnoResponseDto> listadoARetornar = new ArrayList<>();
+        TurnoResponseDto turnoAuxiliar = null;
+        for (Turno turno: listadoTurnos){
+            turnoAuxiliar = mapToResponseDto(turno);
+            listadoARetornar.add(turnoAuxiliar);
+        }
+        return listadoARetornar;
+    }
+
+
     // metodo que mapea turno en turnoResponseDto
     private TurnoResponseDto mapToResponseDto(Turno turno){
         TurnoResponseDto turnoResponseDto = modelMapper.map(turno, TurnoResponseDto.class);

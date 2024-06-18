@@ -1,40 +1,54 @@
 package dh.backend.clinicamvc.service.impl;
 
-import dh.backend.clinicamvc.dao.IDao;
+import dh.backend.clinicamvc.exception.ResourceNotFoundException;
 import dh.backend.clinicamvc.model.Odontologo;
-import dh.backend.clinicamvc.model.Paciente;
+import dh.backend.clinicamvc.repository.IOdontologoRepository;
 import dh.backend.clinicamvc.service.IOdoltologoService;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class OdontologoService implements IOdoltologoService {
-    private IDao<Odontologo> odontologoIDao;
+    private IOdontologoRepository odontologoRepository;
 
-    public OdontologoService(IDao<Odontologo> odontologoIDao) {
-        this.odontologoIDao = odontologoIDao;
+    public OdontologoService(IOdontologoRepository odontologoRepository) {
+        this.odontologoRepository = odontologoRepository;
     }
 
-    public Odontologo buscarPorId(Integer id){
-        return odontologoIDao.buscarPorId(id);
+    public Optional<Odontologo> buscarPorId(Integer id){
+        return odontologoRepository.findById(id);
     }
 
     public Odontologo registrarOdontologo(Odontologo odontologo){
-        return odontologoIDao.registrar(odontologo);
+        return odontologoRepository.save(odontologo);
     }
 
     public List<Odontologo> buscarTodos(){
-        return odontologoIDao.buscarTodos();
+        return odontologoRepository.findAll();
     }
 
     @Override
     public void actualizarOdontologo(Odontologo odontologo) {
-        odontologoIDao.actualizar(odontologo);
+        odontologoRepository.save(odontologo);
     }
 
     @Override
-    public void eliminarOdontologo(Integer id) {
-    odontologoIDao.eliminar(id);
+    public void eliminarOdontologo(Integer id) throws ResourceNotFoundException {
+        Optional<Odontologo> odontologoOptional = buscarPorId(id);
+        if(odontologoOptional.isPresent())
+            odontologoRepository.deleteById(id);
+        else throw new ResourceNotFoundException("{\"message\": \"odontologo no encontrado\"}");
+    }
+    @Override
+    public List<Odontologo> buscarPorApellido(String apellido) {
+        return odontologoRepository.buscarPorApellido(apellido);
+    }
+
+    @Override
+    public List<Odontologo> buscarPorNombre(String nombre) {
+        return odontologoRepository.findByNombreLike(nombre);
     }
 }

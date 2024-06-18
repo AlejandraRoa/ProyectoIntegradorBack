@@ -7,7 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-
 public class TurnoRequestDto {
     private Integer paciente_id;
     private Integer odontologo_id;

@@ -1,38 +1,45 @@
 package dh.backend.clinicamvc.service.impl;
 
-import dh.backend.clinicamvc.dao.IDao;
+import dh.backend.clinicamvc.exception.ResourceNotFoundException;
 import dh.backend.clinicamvc.model.Paciente;
+import dh.backend.clinicamvc.repository.IPacienteRepository;
 import dh.backend.clinicamvc.service.IPacienteService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class PacienteService implements IPacienteService {
-    private IDao<Paciente> pacienteIDao;
+    private IPacienteRepository pacienteRepository;
 
-    public PacienteService(IDao<Paciente> pacienteIDao) {
-        this.pacienteIDao = pacienteIDao;
+    public PacienteService(IPacienteRepository pacienteRepository) {
+        this.pacienteRepository = pacienteRepository;
     }
 
     public Paciente registrarPaciente(Paciente paciente){
-        return pacienteIDao.registrar(paciente);
+        return pacienteRepository.save(paciente);
     }
 
-    public Paciente buscarPorId(Integer id){
-        return pacienteIDao.buscarPorId(id);
+    public Optional<Paciente> buscarPorId(Integer id){
+        return pacienteRepository.findById(id);
     }
 
     public List<Paciente> buscarTodos(){
-        return pacienteIDao.buscarTodos();
+        return pacienteRepository.findAll();
     }
 
     @Override
     public void actualizarPaciente(Paciente paciente) {
-        pacienteIDao.actualizar(paciente);
+        pacienteRepository.save(paciente);
     }
 
     @Override
-    public void eliminarPaciente(Integer id) {
-        pacienteIDao.eliminar(id);
+    public void eliminarPaciente(Integer id)  throws ResourceNotFoundException {
+        Optional<Paciente> pacienteOptional = buscarPorId(id);
+        if(pacienteOptional.isPresent())
+            pacienteRepository.deleteById(id);
+        else
+            throw new ResourceNotFoundException("{\"message\": \"paciente no encontrado\"}");
     }
 }
