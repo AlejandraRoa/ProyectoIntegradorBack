@@ -44,7 +44,7 @@ public class PacienteDaoH2 implements IDao<Paciente> {
             while (resultSet.next()){
                 Integer id= resultSet.getInt(1);
                 pacienteARetornar = new Paciente(id, paciente.getApellido(), paciente.getNombre(),
-                        paciente.getDni(), paciente.getFechaIngreso(), domicilioGuardado);
+                        paciente.getDni(), paciente.getFechaIngreso(), domicilioGuardado,null);
             }
             LOGGER.info("paciente guardado: "+ pacienteARetornar);
 
@@ -92,7 +92,7 @@ public class PacienteDaoH2 implements IDao<Paciente> {
                 LocalDate fecha = resultSet.getDate(5).toLocalDate();
                 Integer idDomicilio = resultSet.getInt(6);
                 Domicilio domicilioEncontrado = domicilioDaoH2.buscarPorId(idDomicilio);
-                pacienteEncontrado = new Paciente(idDevuelto, apellido, nombre,dni, fecha, domicilioEncontrado);
+                pacienteEncontrado = new Paciente(idDevuelto, apellido, nombre,dni, fecha, domicilioEncontrado,null);
             }
             LOGGER.info("paciente encontrado: "+ pacienteEncontrado);
 
@@ -127,7 +127,7 @@ public class PacienteDaoH2 implements IDao<Paciente> {
                 LocalDate fecha = resultSet.getDate(5).toLocalDate();
                 Integer idDomicilio = resultSet.getInt(6);
                 Domicilio domicilioEncontrado = domicilioDaoH2.buscarPorId(idDomicilio);
-                Paciente paciente = new Paciente(idDevuelto, apellido, nombre,dni, fecha, domicilioEncontrado);
+                Paciente paciente = new Paciente(idDevuelto, apellido, nombre,dni, fecha, domicilioEncontrado,null);
 
                 LOGGER.info("paciente listado: "+ paciente);
                 pacientes.add(paciente);

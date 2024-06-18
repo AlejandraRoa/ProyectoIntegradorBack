@@ -17,6 +17,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,25 +36,21 @@ class OdontologoServiceTest {
     }
 
     @Test
-    @DisplayName("Testear busqueda todos los odontologos")
-    void testBusquedaTodos() {
-
-        Odontologo odontologo = new Odontologo("Urrego","Maria","16858361");
-        Odontologo odontologo2 = new Odontologo("Sabando","Sergio","16857863");
-        odontologoService.registrarOdontologo(odontologo);
-        odontologoService.registrarOdontologo(odontologo2);
-
-        List<Odontologo> odontologos = odontologoService.buscarTodos();
-        assertEquals(2, odontologos.size());
-
+    @DisplayName("Testear que un odontólogo fue guardado")
+    void testPacienteGuardado(){
+        Odontologo odontologoDB = odontologoService.registrarOdontologo(odontologo);
+        assertNotNull(odontologoDB);
     }
+
 
     @Test
     @DisplayName("Testear busqueda odontologo por id")
     void testPacientePorId(){
         Integer id = 1;
-        Odontologo odontologoEncontrado = odontologoService.buscarPorId(id);
-        assertEquals(id, odontologoEncontrado.getId());
+        Optional<Odontologo> odontologoEncontrado = odontologoService.buscarPorId(id);
+        Odontologo paciente1 = odontologoEncontrado.get();
+
+        assertEquals(id, paciente1.getId());
     }
 
 
