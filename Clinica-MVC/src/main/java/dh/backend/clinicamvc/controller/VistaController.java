@@ -1,10 +1,9 @@
 package dh.backend.clinicamvc.controller;
 
-import dh.backend.clinicamvc.model.Odontologo;
-import dh.backend.clinicamvc.model.Paciente;
+import dh.backend.clinicamvc.entity.Odontologo;
+import dh.backend.clinicamvc.entity.Paciente;
 import dh.backend.clinicamvc.service.IOdoltologoService;
 import dh.backend.clinicamvc.service.IPacienteService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

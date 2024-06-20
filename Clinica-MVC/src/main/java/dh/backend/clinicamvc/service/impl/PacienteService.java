@@ -1,7 +1,7 @@
 package dh.backend.clinicamvc.service.impl;
 
+import dh.backend.clinicamvc.entity.Paciente;
 import dh.backend.clinicamvc.exception.ResourceNotFoundException;
-import dh.backend.clinicamvc.model.Paciente;
 import dh.backend.clinicamvc.repository.IPacienteRepository;
 import dh.backend.clinicamvc.service.IPacienteService;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,7 @@ public class PacienteService implements IPacienteService {
     public PacienteService(IPacienteRepository pacienteRepository) {
         this.pacienteRepository = pacienteRepository;
     }
+
 
     public Paciente registrarPaciente(Paciente paciente){
         return pacienteRepository.save(paciente);

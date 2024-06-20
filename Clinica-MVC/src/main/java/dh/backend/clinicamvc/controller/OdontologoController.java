@@ -1,13 +1,10 @@
 package dh.backend.clinicamvc.controller;
 
 import dh.backend.clinicamvc.exception.ResourceNotFoundException;
-import dh.backend.clinicamvc.model.Odontologo;
-import dh.backend.clinicamvc.model.Paciente;
+import dh.backend.clinicamvc.entity.Odontologo;
 import dh.backend.clinicamvc.service.impl.OdontologoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

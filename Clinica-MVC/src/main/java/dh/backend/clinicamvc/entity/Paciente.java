@@ -1,4 +1,4 @@
-package dh.backend.clinicamvc.model;
+package dh.backend.clinicamvc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

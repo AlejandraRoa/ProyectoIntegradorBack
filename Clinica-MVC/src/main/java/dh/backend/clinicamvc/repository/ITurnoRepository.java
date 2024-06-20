@@ -1,6 +1,6 @@
 package dh.backend.clinicamvc.repository;
 
-import dh.backend.clinicamvc.model.Turno;
+import dh.backend.clinicamvc.entity.Turno;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

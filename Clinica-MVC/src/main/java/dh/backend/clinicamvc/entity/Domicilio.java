@@ -1,4 +1,4 @@
-package dh.backend.clinicamvc.model;
+package dh.backend.clinicamvc.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,7 +1,11 @@
-package dh.backend.clinicamvc.model;
+package dh.backend.clinicamvc.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,4 +21,8 @@ public class Odontologo {
     private String numeroMatricula;
     private String apellido;
     private String nombre;
+
+    @OneToMany(mappedBy = "odontologo", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Turno> turnoSet = new HashSet<>();
 }
